@@ -39,8 +39,7 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardNameText"
-        app:layout_constraintVertical_bias="0.104"
-        app:srcCompat="@drawable/initial_card_image" />
+        app:layout_constraintVertical_bias="0.104" />
 
     <TextView
         android:id="@+id/cardNameText"
@@ -56,10 +55,11 @@
         android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="searchCard"
         android:text="Search"
+        app:layout_constraintBottom_toTopOf="@+id/cardNameText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="125dp"
-        android:onClick="searchCard"/>
+        app:layout_constraintTop_toBottomOf="@+id/cardNameInput" />
 </androidx.constraintlayout.widget.ConstraintLayout>

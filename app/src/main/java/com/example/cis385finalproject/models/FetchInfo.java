@@ -1,5 +1,7 @@
 package com.example.cis385finalproject.models;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -8,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.cis385finalproject.R;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,21 +40,22 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         try {
             JSONObject jsonObject = new JSONObject(s);
-            JSONArray itemsArray = jsonObject.getJSONArray("data");
+            JSONArray dataArray = jsonObject.getJSONArray("data");
             int i = 0;
             String name = null;
             String imageURL = null;
-            while (i < itemsArray.length() &&
+            while (i < dataArray.length() &&
                     (imageURL == null && name == null)) {
                 // Get the current item information.
-                JSONObject book = itemsArray.getJSONObject(i);
-                JSONObject volumeInfo = book.getJSONObject("data");
+                JSONObject cardInfo = dataArray.getJSONObject(i);
+                JSONArray cardImage = cardInfo.getJSONArray("card_images");
+                JSONObject imageURLTest = cardImage.getJSONObject(i);
 
                 // Try to get the author and title from the current item,
                 // catch if either field is empty and move on.
                 try {
-                    name = volumeInfo.getString("name");
-                   /* imageURL = volumeInfo.getString("image_url");*/
+                    name = cardInfo.getString("name");
+                    imageURL = imageURLTest.getString("image_url");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -61,13 +65,9 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
             }
             if (name != null && imageURL != null) {
                 mCardNameText.get().setText(name);
-                try {
-                    InputStream is = (InputStream) new URL(imageURL).getContent();
-                    Drawable d = Drawable.createFromStream(is, "card_image");
-                    mCardImage.get().setImageDrawable(d);
-                } catch (Exception e) {
 
-                }
+                Picasso.get().load(imageURL).into(mCardImage.get());
+
             } else {
                 // If none are found, update the UI to
                 // show failed results.

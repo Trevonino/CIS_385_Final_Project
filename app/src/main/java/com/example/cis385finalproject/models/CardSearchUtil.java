@@ -71,7 +71,9 @@ public class CardSearchUtil {
 
         }
 
-        Log.d(LOG_TAG, cardJSONString);
+        if (cardJSONString != null) {
+            Log.d(LOG_TAG, cardJSONString);
+        }
         return cardJSONString;
     }
 }

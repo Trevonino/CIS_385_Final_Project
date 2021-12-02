@@ -13,22 +13,16 @@ import java.net.URL;
 public class RandomCardUtil {
     private static final String LOG_TAG = CardSearchUtil.class.getSimpleName();
     // Base URL for Books API.
-    private static final String BOOK_BASE_URL =  "https://db.ygoprodeck.com/api/v7/cardinfo.php";
-    // Parameter for the search string.
-    private static final String QUERY_PARAM = "name";
-    // Parameter that limits search results.
-    private static final String MAX_RESULTS = "maxResults";
-    // Parameter to filter by print type.
-    private static final String PRINT_TYPE = "printType";
+    private static final String BOOK_BASE_URL =  "https://db.ygoprodeck.com/api/v7/randomcard.php";
 
-    static String getBookInfo(String queryString){
+
+    static String getCardInfo(){
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String cardJSONString = null;
 
         try {
             Uri builtURI = Uri.parse(BOOK_BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM, queryString)
                     .build();
             URL requestURL = new URL(builtURI.toString());
             urlConnection = (HttpURLConnection) requestURL.openConnection();
@@ -71,7 +65,9 @@ public class RandomCardUtil {
 
         }
 
-        Log.d(LOG_TAG, cardJSONString);
+        if (cardJSONString != null) {
+            Log.d(LOG_TAG, cardJSONString);
+        }
         return cardJSONString;
     }
 }

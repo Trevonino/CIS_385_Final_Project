@@ -8,9 +8,12 @@ import android.widget.TextView;
 
 import com.example.cis385finalproject.models.FetchInfo;
 import com.example.cis385finalproject.models.FetchInfoRandom;
+import com.squareup.picasso.Picasso;
 
 public class RandomCard extends AppCompatActivity {
 
+    private static final String CARD_URL = "";
+    private static String imageURL;
     private String mClassName = "Random Card";
 
     private TextView mNameText;
@@ -38,6 +41,22 @@ public class RandomCard extends AppCompatActivity {
         mCardArchetype = (TextView)findViewById(R.id.cardArchetype);
         mCardPrice = (TextView)findViewById(R.id.cardPrice);
 
-        new FetchInfoRandom(mNameText, mCardImage, mCardLevel, mCardRace, mCardAttribute, mCardType, mDestText, mCardArchetype, mCardPrice,mClassName).execute("");
+        if (savedInstanceState != null) {
+            Picasso.get().load(imageURL).into(mCardImage);
+        }
+        else {
+            new FetchInfoRandom(mNameText, mCardImage, mCardLevel, mCardRace, mCardAttribute, mCardType, mDestText, mCardArchetype, mCardPrice, mClassName).execute("");
+        }
+    }
+
+    public static void setImageURL(String url){
+        imageURL = url;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CARD_URL, imageURL);
+
     }
 }

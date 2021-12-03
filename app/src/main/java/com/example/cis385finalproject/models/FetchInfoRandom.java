@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.cis385finalproject.R;
+import com.example.cis385finalproject.RandomCard;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -85,6 +86,7 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                     try {
                         name = jsonObject.getString("name");
                         imageURL = imageURLObject.getString("image_url");
+                        RandomCard.setImageURL(imageURL);
                         try {
                             cardLevel = jsonObject.getString("level");
                         }
@@ -235,6 +237,7 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                 Log.d("test","item not found?");
                 mCardNameText.get().setText(R.string.no_results);
                 Picasso.get().load(R.drawable.card_blank).into(mCardImage.get());
+                mCardAttribute.get().setText("");
                 mCardLevel.get().setText("");
                 mCardRace.get().setText("");
                 mCardTypeText.get().setText("");

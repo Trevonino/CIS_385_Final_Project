@@ -240,6 +240,7 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                     mCardPrice.get().setLayoutParams(params);
                 }
 
+
             }
             } else {
                 // If none are found, update the UI to
@@ -247,6 +248,7 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                 Log.d("test","item not found?");
                 mCardNameText.get().setText(R.string.no_results);
                 Picasso.get().load(R.drawable.card_blank).into(mCardImage.get());
+                mCardAttribute.get().setText("");
                 mCardLevel.get().setText("");
                 mCardRace.get().setText("");
                 mCardTypeText.get().setText("");

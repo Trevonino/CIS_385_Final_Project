@@ -3,6 +3,7 @@ package com.example.cis385finalproject.models;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutionException;
 
 public class FetchInfoRandom extends AsyncTask<String, Void, String> {
 
@@ -28,10 +30,11 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
     private WeakReference<TextView> mCardAttribute;
     private WeakReference<TextView> mCardTypeText;
     private WeakReference<TextView> mCardDescText;
+    private WeakReference<TextView> mCardAttackAndDef;
     private WeakReference<TextView> mCardArchetype;
     private WeakReference<TextView> mCardPrice;
 
-    public FetchInfoRandom(TextView nameText, ImageView cardImage, TextView cardLevel, TextView cardRace, TextView cardAttribute,TextView cardType, TextView cardDesc, TextView cardArch, TextView cardPrice, String className) {
+    public FetchInfoRandom(TextView nameText, ImageView cardImage, TextView cardLevel, TextView cardRace, TextView cardAttribute,TextView cardType, TextView cardDesc, TextView cardAtkAndDef, TextView cardArch, TextView cardPrice, String className) {
         this.mCardNameText = new WeakReference<>(nameText);
         this.mCardImage = new WeakReference<>(cardImage);
         this.mCardLevel = new WeakReference<>(cardLevel);
@@ -39,6 +42,7 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
         this.mCardAttribute = new WeakReference<>(cardAttribute);
         this.mCardTypeText = new WeakReference<>(cardType);
         this.mCardDescText = new WeakReference<>(cardDesc);
+        this.mCardAttackAndDef = new WeakReference<>(cardAtkAndDef);
         this.mCardArchetype = new WeakReference<>(cardArch);
         this.mCardPrice = new WeakReference<>(cardPrice);
         this.mClassName = className;
@@ -71,6 +75,8 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                 String cardAttribute = null;
                 String cardType = null;
                 String cardDesc = null;
+                String cardAtk = null;
+                String cardDef = null;
                 String cardArch = null;
                 String cardPrice = null;
                 while (i < jsonObject.length() &&
@@ -109,6 +115,18 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                         cardType = jsonObject.getString("type");
                         cardDesc = jsonObject.getString("desc");
                         try {
+                            cardAtk = jsonObject.getString("atk");
+                        }
+                        catch (Exception e){
+                            cardAtk = null;
+                        }
+                        try {
+                            cardDef = jsonObject.getString("def");
+                        }
+                        catch (Exception e){
+                            cardDef = null;
+                        }
+                        try {
                             cardArch = jsonObject.getString("archetype");
                         }
                         catch (Exception e){
@@ -133,13 +151,10 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                     mCardNameText.get().setText(name);
                     Picasso.get().load(imageURL).into(mCardImage.get());
                     if (cardLevel != null){
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0,10,0,0);
-                        params.gravity = Gravity.CENTER;
 
-                        mCardLevel.get().setLayoutParams(params);
-                        mCardRace.get().setLayoutParams(params);
-                        mCardAttribute.get().setLayoutParams(params);
+                        mCardLevel.get().setVisibility(View.VISIBLE);
+                        mCardRace.get().setVisibility(View.VISIBLE);
+                        mCardAttribute.get().setVisibility(View.VISIBLE);
 
                         String tempLevelString = "Level: ";
                         String tempRaceString = "Race: ";
@@ -155,13 +170,9 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                     }
 
                     if (cardLinkVal != null){
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0,10,0,0);
-                        params.gravity = Gravity.CENTER;
-
-                        mCardLevel.get().setLayoutParams(params);
-                        mCardRace.get().setLayoutParams(params);
-                        mCardAttribute.get().setLayoutParams(params);
+                        mCardLevel.get().setVisibility(View.VISIBLE);
+                        mCardRace.get().setVisibility(View.VISIBLE);
+                        mCardAttribute.get().setVisibility(View.VISIBLE);
 
                         String tempLinkString = "Link Value: ";
                         String tempRaceString = "Race: ";
@@ -177,23 +188,29 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                     }
 
                     if (cardLinkVal == null && cardLevel == null) {
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0,0,0,0);
-                        params.height = 0;
-                        params.width = 0;
-
-                        mCardLevel.get().setLayoutParams(params);
-                        mCardRace.get().setLayoutParams(params);
-                        mCardAttribute.get().setLayoutParams(params);
+                        mCardLevel.get().setVisibility(View.GONE);
+                        mCardRace.get().setVisibility(View.GONE);
+                        mCardAttribute.get().setVisibility(View.GONE);
                     }
                     mCardTypeText.get().setText(cardType);
                     mCardDescText.get().setText(cardDesc);
-                    if (cardArch != null) {
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0,10,0,0);
-                        params.gravity = Gravity.CENTER;
 
-                        mCardArchetype.get().setLayoutParams(params);
+                    if (cardAtk != null) {
+                        mCardAttackAndDef.get().setVisibility(View.VISIBLE);
+                        String cardAtkDeftemp = "ATK: ";
+                        cardAtkDeftemp = cardAtkDeftemp.concat(cardAtk);
+                        if (cardDef != null) {
+                            cardAtkDeftemp = cardAtkDeftemp.concat("/ DEF: ");
+                            cardAtkDeftemp = cardAtkDeftemp.concat(cardDef);
+                        }
+                        mCardAttackAndDef.get().setText(cardAtkDeftemp);
+                    }
+                    else{
+                        mCardAttackAndDef.get().setVisibility(View.GONE);
+                    }
+                    if (cardArch != null) {
+
+                        mCardArchetype.get().setVisibility(View.VISIBLE);
 
                         String tempCardArch = "Card Archetype: ";
                         tempCardArch = tempCardArch.concat(cardArch);
@@ -201,20 +218,11 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                         mCardArchetype.get().setText(tempCardArch);
                     }
                     else{
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0,0,0,0);
-                        params.height = 0;
-                        params.width = 0;
-
-                        mCardArchetype.get().setLayoutParams(params);
+                        mCardArchetype.get().setVisibility(View.GONE);
                     }
 
                     if (cardPrice != null) {
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0,10,0,0);
-                        params.gravity = Gravity.CENTER;
-
-                        mCardPrice.get().setLayoutParams(params);
+                        mCardPrice.get().setVisibility(View.VISIBLE);
 
                         String tempCardPrice = "Card Price: $";
                         tempCardPrice = tempCardPrice.concat(cardPrice);
@@ -222,12 +230,7 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                         mCardPrice.get().setText(tempCardPrice);
                     }
                     else{
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(0,0,0,0);
-                        params.height = 0;
-                        params.width = 0;
-
-                        mCardPrice.get().setLayoutParams(params);
+                        mCardPrice.get().setVisibility(View.GONE);
                     }
 
                 }
@@ -242,6 +245,7 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
                 mCardRace.get().setText("");
                 mCardTypeText.get().setText("");
                 mCardDescText.get().setText("");
+                mCardAttackAndDef.get().setText("");
                 mCardArchetype.get().setText("");
                 mCardPrice.get().setText("");
             }
@@ -254,6 +258,7 @@ public class FetchInfoRandom extends AsyncTask<String, Void, String> {
             mCardRace.get().setText("");
             mCardTypeText.get().setText("");
             mCardDescText.get().setText("");
+            mCardAttackAndDef.get().setText("");
             mCardArchetype.get().setText("");
             mCardPrice.get().setText("");
             e.printStackTrace();

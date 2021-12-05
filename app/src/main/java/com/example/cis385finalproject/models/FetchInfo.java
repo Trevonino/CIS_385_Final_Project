@@ -15,6 +15,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 
 import com.example.cis385finalproject.R;
+import com.example.cis385finalproject.RandomCard;
+import com.example.cis385finalproject.SearchCard;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -37,10 +39,11 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
     private WeakReference<TextView> mCardAttribute;
     private WeakReference<TextView> mCardTypeText;
     private WeakReference<TextView> mCardDescText;
+    private WeakReference<TextView> mCardAttackAndDef;
     private WeakReference<TextView> mCardArchetype;
     private WeakReference<TextView> mCardPrice;
 
-    public FetchInfo(TextView nameText, ImageView cardImage, TextView cardLevel, TextView cardRace, TextView cardAttribute,TextView cardType, TextView cardDesc, TextView cardArch, TextView cardPrice, String className) {
+    public FetchInfo(TextView nameText, ImageView cardImage, TextView cardLevel, TextView cardRace, TextView cardAttribute,TextView cardType, TextView cardDesc, TextView cardAtkAndDef,TextView cardArch, TextView cardPrice, String className) {
         this.mCardNameText = new WeakReference<>(nameText);
         this.mCardImage = new WeakReference<>(cardImage);
         this.mCardLevel = new WeakReference<>(cardLevel);
@@ -48,6 +51,7 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
         this.mCardAttribute = new WeakReference<>(cardAttribute);
         this.mCardTypeText = new WeakReference<>(cardType);
         this.mCardDescText = new WeakReference<>(cardDesc);
+        this.mCardAttackAndDef = new WeakReference<>(cardAtkAndDef);
         this.mCardArchetype = new WeakReference<>(cardArch);
         this.mCardPrice = new WeakReference<>(cardPrice);
         this.mClassName = className;
@@ -81,6 +85,8 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
             String cardAttribute = null;
             String cardType = null;
             String cardDesc = null;
+            String cardAtk = null;
+            String cardDef = null;
             String cardArch = null;
             String cardPrice = null;
             while (i < dataArray.length() &&
@@ -97,6 +103,7 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                 try {
                     name = cardInfo.getString("name");
                     imageURL = imageURLObject.getString("image_url");
+                    SearchCard.setImageURL(imageURL);
                     try {
                         cardLevel = cardInfo.getString("level");
                     }
@@ -118,6 +125,18 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                     cardRace = cardInfo.getString("race");
                     cardType = cardInfo.getString("type");
                     cardDesc = cardInfo.getString("desc");
+                    try {
+                        cardAtk = cardInfo.getString("atk");
+                    }
+                    catch (Exception e){
+                        cardAtk = null;
+                    }
+                    try {
+                        cardDef = cardInfo.getString("def");
+                    }
+                    catch (Exception e){
+                        cardDef = null;
+                    }
                     try {
                         cardArch = cardInfo.getString("archetype");
                     }
@@ -143,13 +162,10 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                 mCardNameText.get().setText(name);
                 Picasso.get().load(imageURL).into(mCardImage.get());
                 if (cardLevel != null){
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0,10,0,0);
-                    params.gravity = Gravity.CENTER;
 
-                    mCardLevel.get().setLayoutParams(params);
-                    mCardRace.get().setLayoutParams(params);
-                    mCardAttribute.get().setLayoutParams(params);
+                    mCardLevel.get().setVisibility(View.VISIBLE);
+                    mCardRace.get().setVisibility(View.VISIBLE);
+                    mCardAttribute.get().setVisibility(View.VISIBLE);
 
                     String tempLevelString = "Level: ";
                     String tempRaceString = "Race: ";
@@ -165,13 +181,9 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                 }
 
                 if (cardLinkVal != null){
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0,10,0,0);
-                    params.gravity = Gravity.CENTER;
-
-                    mCardLevel.get().setLayoutParams(params);
-                    mCardRace.get().setLayoutParams(params);
-                    mCardAttribute.get().setLayoutParams(params);
+                    mCardLevel.get().setVisibility(View.VISIBLE);
+                    mCardRace.get().setVisibility(View.VISIBLE);
+                    mCardAttribute.get().setVisibility(View.VISIBLE);
 
                     String tempLinkString = "Link Value: ";
                     String tempRaceString = "Race: ";
@@ -187,23 +199,27 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                 }
 
                 if (cardLinkVal == null && cardLevel == null) {
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0,0,0,0);
-                    params.height = 0;
-                    params.width = 0;
-
-                    mCardLevel.get().setLayoutParams(params);
-                    mCardRace.get().setLayoutParams(params);
-                    mCardAttribute.get().setLayoutParams(params);
+                    mCardLevel.get().setVisibility(View.GONE);
+                    mCardRace.get().setVisibility(View.GONE);
+                    mCardAttribute.get().setVisibility(View.GONE);
                 }
                 mCardTypeText.get().setText(cardType);
                 mCardDescText.get().setText(cardDesc);
+                if (cardAtk != null) {
+                    mCardAttackAndDef.get().setVisibility(View.VISIBLE);
+                    String cardAtkDeftemp = "ATK: ";
+                    cardAtkDeftemp = cardAtkDeftemp.concat(cardAtk);
+                    if (cardDef != null) {
+                        cardAtkDeftemp = cardAtkDeftemp.concat("/ DEF: ");
+                        cardAtkDeftemp = cardAtkDeftemp.concat(cardDef);
+                    }
+                    mCardAttackAndDef.get().setText(cardAtkDeftemp);
+                }
+                else{
+                    mCardAttackAndDef.get().setVisibility(View.GONE);
+                }
                 if (cardArch != null) {
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0,10,0,0);
-                    params.gravity = Gravity.CENTER;
-
-                    mCardArchetype.get().setLayoutParams(params);
+                    mCardArchetype.get().setVisibility(View.VISIBLE);
 
                     String tempCardArch = "Card Archetype: ";
                     tempCardArch = tempCardArch.concat(cardArch);
@@ -211,20 +227,11 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                     mCardArchetype.get().setText(tempCardArch);
                 }
                 else{
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0,0,0,0);
-                    params.height = 0;
-                    params.width = 0;
-
-                    mCardArchetype.get().setLayoutParams(params);
+                    mCardArchetype.get().setVisibility(View.GONE);
                 }
 
                 if (cardPrice != null) {
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0,10,0,0);
-                    params.gravity = Gravity.CENTER;
-
-                    mCardPrice.get().setLayoutParams(params);
+                    mCardPrice.get().setVisibility(View.VISIBLE);
 
                     String tempCardPrice = "Card Price: $";
                     tempCardPrice = tempCardPrice.concat(cardPrice);
@@ -232,12 +239,7 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                     mCardPrice.get().setText(tempCardPrice);
                 }
                 else{
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0,0,0,0);
-                    params.height = 0;
-                    params.width = 0;
-
-                    mCardPrice.get().setLayoutParams(params);
+                    mCardPrice.get().setVisibility(View.GONE);
                 }
 
 
@@ -253,6 +255,7 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
                 mCardRace.get().setText("");
                 mCardTypeText.get().setText("");
                 mCardDescText.get().setText("");
+                mCardAttackAndDef.get().setText("");
                 mCardArchetype.get().setText("");
                 mCardPrice.get().setText("");
             }
@@ -265,9 +268,38 @@ public class FetchInfo extends AsyncTask<String, Void, String> {
             mCardRace.get().setText("");
             mCardTypeText.get().setText("");
             mCardDescText.get().setText("");
+            mCardAttackAndDef.get().setText("");
             mCardArchetype.get().setText("");
             mCardPrice.get().setText("");
             e.printStackTrace();
         }
     }
+
+    public static boolean cardsInBudget(double cardTotal, double budgetTotal) {
+        if (cardTotal < budgetTotal) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static boolean cardIsSpell(String cardType) {
+        if (cardType.equals("Spell Card")) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static boolean cardsLevelInRange(int cardLevel, int levelMax, int levelMin) {
+        if (cardLevel < levelMax && cardLevel > levelMin) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 }

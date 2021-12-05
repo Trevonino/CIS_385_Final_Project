@@ -11,9 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final int SEARCH_REQUEST = 1;
+    private static final String RECENT_SEARCH_TEXT = "";
 
     private TextView mPreviousSearch;
     private TextView mPreviousSearchInfo;
@@ -25,6 +28,15 @@ public class MainActivity extends AppCompatActivity {
 
         mPreviousSearch = (TextView)findViewById(R.id.previousSearchText);
         mPreviousSearchInfo = (TextView)findViewById(R.id.previousSearchInfo);
+
+        if (savedInstanceState != null) {
+            if (!savedInstanceState.getString(RECENT_SEARCH_TEXT).equals("")) {
+                mPreviousSearchInfo.setVisibility(View.VISIBLE);
+
+                mPreviousSearch.setText(savedInstanceState.getString(RECENT_SEARCH_TEXT));
+                mPreviousSearch.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public void startRandomCard(View view) {
@@ -84,9 +96,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        closeOptionsMenu();
-        super.onDestroy();
+    public void onSaveInstanceState(Bundle outState) {
+        String recentSearchText = mPreviousSearch.getText().toString();
+        super.onSaveInstanceState(outState);
+        outState.putString(RECENT_SEARCH_TEXT, recentSearchText);
     }
 }

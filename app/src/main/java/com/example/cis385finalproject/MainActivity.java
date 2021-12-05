@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //Check if the correct item was clicked
-        if(item.getItemId()==R.id.night_mode){}
         if(item.getItemId()==R.id.night_mode){
             // Get the night mode state of the app.
             int nightMode = AppCompatDelegate.getDefaultNightMode();
@@ -62,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
             }
 // Recreate the activity for the theme change to take effect.
             recreate();
-
         }
         return true;
     }
@@ -84,5 +82,11 @@ public class MainActivity extends AppCompatActivity {
                 mPreviousSearch.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        closeOptionsMenu();
+        super.onDestroy();
     }
 }

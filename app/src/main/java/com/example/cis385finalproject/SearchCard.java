@@ -62,12 +62,7 @@ public class SearchCard extends AppCompatActivity {
 
     public void returnSearch(View view) {
         String search;
-        if (!mCardNameInput.getText().toString().equals("")) {
-            search = mCardNameInput.getText().toString();
-        }
-        else{
-            search = "Call of the Archfiend";
-        }
+        search = mNameText.getText().toString();
         Intent replyIntent = new Intent();
         replyIntent.putExtra(EXTRA_PREVIOUS_SEARCH, search);
         setResult(RESULT_OK, replyIntent);

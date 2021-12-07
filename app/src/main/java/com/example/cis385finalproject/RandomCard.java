@@ -106,4 +106,8 @@ public class RandomCard extends AppCompatActivity {
         String[] bundleArray = {imageURL, mNameText.getText().toString(), mCardLevel.getText().toString(), mCardRace.getText().toString(), mCardAttribute.getText().toString(), mCardType.getText().toString(), mDescText.getText().toString(), mCardAttackAndDef.getText().toString(), mCardArchetype.getText().toString(), mCardPrice.getText().toString()};
         outState.putStringArray(CARD_INFO, bundleArray);
     }
+
+    public void newRandom(View view) {
+        new FetchInfoRandom(mNameText, mCardImage, mCardLevel, mCardRace, mCardAttribute, mCardType, mDescText, mCardAttackAndDef, mCardArchetype, mCardPrice, mClassName).execute("");
+    }
 }
